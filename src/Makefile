@@ -8,12 +8,12 @@ else
 	CPPFLAGS+=-lpthread 
 endif
 
-all: clean tests
+all: clean test
 
-tests: clean
-	@$(CC) $(CHECKFLAGS) tests.cc -o $@ $(CPPFLAGS) && ./tests
+test: clean
+	@$(CC) $(CHECKFLAGS) test.cc -o $@ $(CPPFLAGS) && ./test
 
-gcov_report: tests
+gcov_report: test
 	@lcov -t "gcov_report" -o report.info --no-external -c -d .
 	@genhtml -o report report.info
 	@open ./report/index.html
@@ -40,18 +40,14 @@ dist:
 	@rm -rf ./Archive_SmartCalc_v2.0
 
 clean: uninstall
-	@rm -rf *.gcda *.gcno *.info tests report CMakeLists.txt.user
+	@rm -rf *.gcda *.gcno *.info test report CMakeLists.txt.user
 
 clang:
-	@cp ../materials/linters/.clang-format credit/
-	@cp credit/.clang-format deposit/
-	@cp deposit/.clang-format graph/
-	@cp graph/.clang-format smartcalc/
-	@cp smartcalc/.clang-format .
+	@cp ../materials/linters/.clang-format .
 	@echo "===> Formatting your code for Google Style <==="
-	@clang-format -i -style=GOOGLE *.cc *.cpp *.h credit/* deposit/* graph/* smartcalc/*
-	@rm credit/.clang-format deposit/.clang-format graph/.clang-format smartcalc/.clang-format .clang-format
+	@clang-format -i -style=GOOGLE *.cc *.cpp *.h credit/*.cc credit/*.cpp credit/*.h deposit/*.cc deposit/*.h deposit/*.cpp graph/*.cc graph/*.cpp graph/*.h smartcalc/*.cc smartcalc/*.h ui/*.ui
+	@rm -rf .clang-format
 
-valgrind: tests
-	@CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./tests .qt
+valgrind: test
+	@CK_FORK=no valgrind --vgdb=no --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./test .qt
 

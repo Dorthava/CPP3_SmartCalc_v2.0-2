@@ -93,6 +93,8 @@ void SmartcalcView::SendSignal() {
 
   connect(ui->Button_C, &QPushButton::clicked, ui->textEdit,
           [this]() { ui->textEdit->clear(); });
+  connect(ui->Button_remove, &QPushButton::clicked, ui->textEdit,
+          [this]() { ui->textEdit->textCursor().deletePreviousChar(); });
 }
 
 void SmartcalcView::СonversionNumber(QString& number) {
